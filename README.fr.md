@@ -29,4 +29,4 @@ Vous pouvez également mettre à jour le fichier plugin.py dans le répertoire d
  * Récupérer l'adresse MAC de votre capteur:
    - ```sudo hcitool lescan```
    - Chercher une ligne du type : ```A1:C2:E3:04:25:46 LYWSD03MMC```
- * Entrer l'adresse MAC dans le champs corr
+ * Entrer l'adresse MAC dans le champ correspondant
