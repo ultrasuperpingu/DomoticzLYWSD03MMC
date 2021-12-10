@@ -13,9 +13,9 @@ To get the development version:
 * Launch: ```git clone https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC.git```
 * Restart Domoticz service: ```sudo service domoticz restart```
 
-You also can copy the plugin.py file in directory domoticz/plugins/{ChooseYourDirectoryName} and restart domoticz.
+You also can copy the plugin.py file in directory ```domoticz/plugins/{ChooseYourDirectoryName}``` and restart domoticz.
 
-To get a release version (when there will be one), download it and uncompress it in the domoticz/plugins/{ChooseYourDirectoryName} directory and restart domoticz.
+To get a release version (when there will be one), download it and uncompress it in the ```domoticz/plugins/{ChooseYourDirectoryName}``` directory and restart domoticz.
 
 ## Update
 
@@ -25,7 +25,7 @@ To update the plugin:
 * Launch: ```git pull```
 * Restart Domoticz service: ```sudo service domoticz restart```
 
-You can also update the plugin.py file in directory domoticz/plugins/{ChooseYourDirectoryName} and restart domoticz.
+You can also update the plugin.py file in directory ```domoticz/plugins/{ChooseYourDirectoryName}``` and restart domoticz.
 
 ## Configuration
  * Get your sensor's MAC address:
