@@ -1,7 +1,7 @@
 # DomoticzLYWSD03MMC
 Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) for Domoticz
 
-*Read this french: [Français](README.fr.md)*
+*Read this in french: [Français](README.fr.md)*
 ## Installation
 Requirements: Only tested with Domoticz version 2020.2, Python 3 have to be installed.
 
