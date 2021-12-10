@@ -11,9 +11,9 @@ Pour récupérer la version de développement :
 * Lancer la commande: ```git clone https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC.git```
 * Redémarrer le service Domoticz en lancant la commande ```sudo service domoticz restart```
 
-Vous pouvez aussi simplement copier le fichier plugin.py dans le répertoire domoticz/plugins/{NomDeRepertoireDeNotreChoix} et redémarrer domoticz.
+Vous pouvez aussi simplement copier le fichier plugin.py dans le répertoire ```domoticz/plugins/{NomDeRepertoireDeVotreChoix}``` et redémarrer domoticz.
 
-Pour récupérer une release (quand il y en aura une), télécharger la version et décompresser l'archive dans le répertoire domoticz/plugins/{NomDeRepertoireDeNotreChoix} et redémarrer domoticz.
+Pour récupérer une release (quand il y en aura une), télécharger la version et décompresser l'archive dans le répertoire ```domoticz/plugins/{NomDeRepertoireDeVotreChoix}``` et redémarrer domoticz.
 
 ## Mise à Jour
 
@@ -23,7 +23,7 @@ Pour mettre à jour le plugin :
 * Lancer la commande: ```git pull```
 * Redémarrer le service Domoticz en lancant la commande ```sudo service domoticz restart```
 
-Vous pouvez également mettre à jour le fichier plugin.py dans le répertoire domoticz/plugins/{NomDeRepertoireDeVotreChoix} et redémarrer domoticz.
+Vous pouvez également mettre à jour le fichier plugin.py dans le répertoire ```domoticz/plugins/{NomDeRepertoireDeVotreChoix}``` et redémarrer domoticz.
 
 ## Configuration
  * Récupérer l'adresse MAC de votre capteur:
