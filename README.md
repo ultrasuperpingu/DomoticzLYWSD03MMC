@@ -1,32 +1,34 @@
 # DomoticzLYWSD03MMC
 Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) for Domoticz
+
+*Read this french: [English](README.fr.md)*
 ## Installation
-Requis : Testé uniquement sur Domoticz version 2020.2, Python 3 doit être installé.
+Requirements: Only tested with Domoticz version 2020.2, Python 3 have to be installed.
 
-Pour récupérer la version de développement :
-* En ligne de commande aller dans le répertoire plugin de Domoticz (domoticz/plugins)
-* Lancer la commande: ```git clone https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC.git```
-* Redémarrer le service Domoticz en lancant la commande ```sudo service domoticz restart```
+To get the development version:
+* With command line, go to Domoticz's plugin directory (domoticz/plugins)
+* Launch: ```git clone https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC.git```
+* Restart Domoticz service: ```sudo service domoticz restart```
 
-Vous pouvez aussi simplement copier le fichier plugin.py dans le répertoire domoticz/plugins/{NomDeRepertoireDeNotreChoix} et redémarrer domoticz.
+You also can copy the plugin.py file in directory domoticz/plugins/{ChooseYourDirectoryName} and restart domoticz.
 
-Pour récupérer une release (quand il y en aura une), télécharger la version et décompresser l'archive dans le répertoire domoticz/plugins/{NomDeRepertoireDeNotreChoix} et redémarrer domoticz.
+To get a release version (when there will be one), download it and uncompress it in the domoticz/plugins/{ChooseYourDirectoryName} directory and restart domoticz.
 
-## Mise à Jour
+## Update
 
-Pour mettre à jour le plugin :
+To update the plugin:
 
-* En ligne de commande, aller dans le répertoire plugin de Domoticz (domoticz/plugins)
-* Lancer la commande: ```git pull```
-* Redémarrer le service Domoticz en lancant la commande ```sudo service domoticz restart```
+* With command line, go to Domoticz's plugin directory (domoticz/plugins)
+* Launch: ```git pull```
+* Restart Domoticz service: ```sudo service domoticz restart```
 
-Vous pouvez également mettre à jour le fichier plugin.py dans le répertoire domoticz/plugins/{NomDeRepertoireDeVotreChoix} et redémarrer domoticz.
+You can also update the plugin.py file in directory domoticz/plugins/{ChooseYourDirectoryName} and restart domoticz.
 
 ## Configuration
- * Installer les packages pythons requis:
+ * Install requiered python packages:
    - ```sudo apt-get install python3-pip libglib2.0-dev```
    - ```sudo pip3 install requests bluepy```
- * Récupérer l'adresse MAC de votre capteur:
+ * Get your sensor's MAC address:
    - ```sudo hcitool lescan```
-   - Chercher une ligne du type : ```A1:C2:E3:04:25:46 LYWSD03MMC```
- * Entrer l'adresse MAC dans le champs correspondant sur la page de configuration du Plugin
+   - Search a line looking like: ```A1:C2:E3:04:25:46 LYWSD03MMC```
+ * Enter MAC address in the corresponding field in plugin parameters
