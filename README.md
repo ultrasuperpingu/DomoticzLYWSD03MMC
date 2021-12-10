@@ -4,7 +4,10 @@ Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) for Domoticz
 *Read this in french: [Français](README.fr.md)*
 ## Installation
 Requirements: Only tested with Domoticz version 2020.2, Python 3 have to be installed.
-
+* Install required python packages:
+   - ```sudo apt-get install python3-pip libglib2.0-dev```
+   - ```sudo pip3 install requests bluepy```
+ 
 To get the development version:
 * With command line, go to Domoticz's plugin directory (domoticz/plugins)
 * Launch: ```git clone https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC.git```
@@ -25,9 +28,6 @@ To update the plugin:
 You can also update the plugin.py file in directory domoticz/plugins/{ChooseYourDirectoryName} and restart domoticz.
 
 ## Configuration
- * Install requiered python packages:
-   - ```sudo apt-get install python3-pip libglib2.0-dev```
-   - ```sudo pip3 install requests bluepy```
  * Get your sensor's MAC address:
    - ```sudo hcitool lescan```
    - Search a line looking like: ```A1:C2:E3:04:25:46 LYWSD03MMC```
