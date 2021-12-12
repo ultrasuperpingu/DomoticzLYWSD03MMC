@@ -1,5 +1,5 @@
 # DomoticzLYWSD03MMC
-Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) for Domoticz
+Plugin Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) pour Domoticz
 ## Installation
 Requis : Testé uniquement sur Domoticz version 2020.2, Python 3 doit être installé.
 * Installer les packages pythons requis:
@@ -26,7 +26,8 @@ Pour mettre à jour le plugin :
 Vous pouvez également mettre à jour le fichier plugin.py dans le répertoire ```domoticz/plugins/{NomDeRepertoireDeVotreChoix}``` et redémarrer domoticz.
 
 ## Configuration
- * Récupérer l'adresse MAC de votre capteur:
+ * Récupérer l'adresse MAC de votre capteur :
    - ```sudo hcitool lescan```
    - Chercher une ligne du type : ```A1:C2:E3:04:25:46 LYWSD03MMC```
- * Entrer l'adresse MAC dans le champ correspondant
+ * Dans le formulaire d'ajout de Materiel dans Domoticz, choisir 'Xiaomi Mijia Humidity and Temperature (LYWSD03MMC)'
+ * Entrer l'adresse MAC dans le champ 'Mac Address'
