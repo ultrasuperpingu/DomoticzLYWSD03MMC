@@ -108,7 +108,10 @@ class BasePlugin:
 					Devices[1].Update(nValue=0, sValue=str(self.temp)+";"+str(self.humidity)+";0")
 		except btle.BTLEException :
 			Domoticz.Error("Disconnect from " + self.adress)
-			self.p.disconnect()
+			try:
+				self.p.disconnect()
+			except Exception:
+				pass
 			self.p = None
 		
 	def connectBluetooth(self):
