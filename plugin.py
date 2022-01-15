@@ -3,7 +3,7 @@ Xiaomi Mijia LYWSD03MMC Bluetooth 4.2 Temperature Humidity sensor python plugin 
 Author: Ultrasuperpingu,
 		adapted from Reading data from Xiaomi Mijia LYWSD03MMC Bluetooth 4.2 Temperature Humidity sensor, see:
 			https://github.com/trandbert37/DomoticzMiTemperature2
-Version: 0.1 (December, 2021) - see history.txt for versions history
+Version: 0.2 (January, 2022)
 """
 """
 <plugin key="LYWSD03MMC" name="Xiaomi Mijia Humidity and Temperature (LYWSD03MMC)" author="ulstrasuperpingu" version="0.1" externallink="https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC">
@@ -11,76 +11,126 @@ Version: 0.1 (December, 2021) - see history.txt for versions history
 		<h2>Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) for Domoticz</h2><br/>
 		Retreive data from Xiaomi Mijia LYWSD03MMC Humidity and Temperature sensor
 		<h3>Set-up and Configuration</h3>
-		Install bluepy module: <pre>sudo pip3 install requests bluepy</pre><br/>
+		Install bluepy module: <pre>sudo apt-get install --no-install-recommends bluetooth
+sudo pip3 install gatt
+sudo apt-get install python3-dbus</pre><br/>
 		Find the MAC adress of your sensor: <pre>sudo hcitool lescan</pre> <br/>
 		<small>Look for lines like <pre>A1:C2:E3:04:25:47 LYWSD03MMC</pre></small><br/>
 		Set the MAC adress in the plugin parameters and add the hardware.
 	</description>
 	<params>
-		<param field="Mode1" label="MAC Adress" width="120px" required="true" default=""/>
-		<param field="Mode2" label="Battery request time (in minutes)" width="120px" default="1440"/>
+		<param field="Mode1" label="Adapter name" width="120px" required="true" default="hci0"/>
+		<param field="Mode2" label="MAC Adresses" width="250px" line="3" required="true" default=""/>
 	</params>
 </plugin>
 """
 
 import Domoticz
-from bluepy import btle
+import gatt
 import re
 import math
 from datetime import datetime, timedelta
+from threading import Thread
 
-mode="round"
-class MyDelegate(btle.DefaultDelegate):
-	def __init__(self, plug):
-		btle.DefaultDelegate.__init__(self)
-		self.plugin = plug
-	
-	def handleNotification(self, cHandle, data):
-		try:
-			self.plugin.temp=int.from_bytes(data[0:2],byteorder='little',signed=True)/100
-			self.plugin.humidity=int.from_bytes(data[2:3],byteorder='little')
-		except Exception as e:
-			print(e)
-			print(traceback.format_exc())
-			self.plugin.p.disconnect()
-			self.plugin.p = None
+class LYWSD03MMCDevice(gatt.Device):
+	def __init__(self, mac_address, manager, plugin):
+		gatt.Device.__init__(self, mac_address=mac_address, manager=manager)
+		self.plugin = plugin
+		self.temp = 0
+		self.humidity = 0
+		self.batt = 0
+		self.received = False
+		self.receivedBatt = False
+		
+	def connect_succeeded(self):
+		super().connect_succeeded()
+		Domoticz.Log("[%s] Connected" % (self.mac_address))
 
+	def connect_failed(self, error):
+		super().connect_failed(error)
+		Domoticz.Log("[%s] Connection failed: %s" % (self.mac_address, str(error)))
+
+	def disconnect_succeeded(self):
+		super().disconnect_succeeded()
+		Domoticz.Log("[%s] Disconnected" % (self.mac_address))
+
+	def services_resolved(self):
+		super().services_resolved()
+
+		Domoticz.Log("[%s] Resolved services" % (self.mac_address))
+		for service in self.services:
+			Domoticz.Log("[%s]  Service [%s]" % (self.mac_address, service.uuid))
+			for characteristic in service.characteristics:
+				Domoticz.Log("[%s]    Characteristic [%s]" % (self.mac_address, characteristic.uuid))
+				characteristic.read_value()
+				if characteristic.uuid == 'ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6' or characteristic.uuid == 'ebe0ccc4-7a0a-4b0c-8a1a-6ff2997da3a6':
+					characteristic.enable_notifications()
+
+	def characteristic_value_updated(self, characteristic, value):
+		if characteristic.uuid == '00002a26-0000-1000-8000-00805f9b34fb':
+			print("Firmware version: "+value.decode("utf-8"))
+		elif characteristic.uuid == 'ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6':
+			self.temp=int.from_bytes(value[0:2],byteorder='little',signed=True)/100
+			self.humidity=int.from_bytes(value[2:3],byteorder='little')
+			self.received = True
+			print(characteristic.uuid+":"+str(self.plugin.temp)+" "+str(self.plugin.humidity))
+		elif characteristic.uuid == 'ebe0ccc4-7a0a-4b0c-8a1a-6ff2997da3a6':
+			self.batt = int.from_bytes(value,byteorder="little")
+			self.receivedBatt = True
+		elif len(value) == 4:
+			print(characteristic.uuid+":"+str(int.from_bytes(value,byteorder="little")))
+		else:
+			print(characteristic.uuid+":"+str(value))
+			
 class BasePlugin:
 
 	def __init__(self):
 		self.temp = 0
 		self.humidity = 0
-		self.lastBattUpdate = None
-		self.batteryRequestTime = 1440
-		self.p=None
+		self.batt = 0
 		self.validConf = False
+		self.thread = None
+		self.received = False
+		self.receivedBatt = False
 		return
 
 
 	def onStart(self):
 		# create the child devices if these do not exist yet
-		devicecreated = []
-		if 1 not in Devices:
-			Domoticz.Status("Creating Temp+Hum device")
-			Domoticz.Device(Name="Temp+Humidity", Unit=1, Type=82, Subtype=1, Used=1).Create()
+		self.devices = []
+		
+		self.manager = gatt.DeviceManager(adapter_name=Parameters["Mode1"])
+		addresses = Parameters["Mode2"].split(',');
+		self.validConf = True;
+		id=1
+		for add in addresses:
+			if not re.match("[0-9a-fA-F]{2}([:]?)[0-9a-fA-F]{2}(\\1[0-9a-fA-F]{2}){4}$", add):
+				self.validConf = False
+			else:
+				if id not in Devices:
+					Domoticz.Status("Creating Temp+Hum device for mac "+add)
+					Domoticz.Device(Name="Temp+Humidity ("+add+")", Unit=id, Type=82, Subtype=1, Used=1).Create()
+				device = LYWSD03MMCDevice(mac_address=add, manager=self.manager, plugin=self)
+				device.connect()
+				self.devices += [device]
+				id+=1
 			
-		try:
-			self.batteryRequestTime = int(Parameters["Mode2"])
-		except ValueError:
-			self.batteryRequestTime = 1440
-			Domoticz.Error("Invalid battery request time: set it to default 1440")
-			
-		if re.match("[0-9a-fA-F]{2}([:]?)[0-9a-fA-F]{2}(\\1[0-9a-fA-F]{2}){4}$", Parameters["Mode1"]):
-			self.adress=Parameters["Mode1"]
-			self.validConf = True
-		else:
-			Domoticz.Error("Please specify device MAC-Address in format AA:BB:CC:DD:EE:FF")
+		if not self.validConf:
+			Domoticz.Error("Please specify device MAC addresses in format AA:BB:CC:DD:EE:FF")
+			return
+		
+		self.thread = Thread(target = lambda : self.manager.run())
+		self.thread.start()
+		
 
 
 	def onStop(self):
-		if self.p:
-			self.p.disconnect()
-
+		if self.thread and thread.self.is_alive():
+			self.manager.stop()
+			self.thread.join()
+			self.manager = None
+			self.thread = None
+		self.devices=[]
 
 	def onCommand(self, Unit, Command, Level, Color):
 		Domoticz.Log("onCommand called for Unit {}: Command '{}', Level: {}".format(Unit, Command, Level))
@@ -89,39 +139,15 @@ class BasePlugin:
 	def onHeartbeat(self):
 		if not self.validConf:
 			return
-		if not self.p:
-			try:
-				self.connectBluetooth();
-			except btle.BTLEException:
-				Domoticz.Error("Unable to connect to " + self.adress)
-			return
-		try:
-			if self.p.waitForNotifications(500):
-				now = datetime.now()
-				if not self.lastBattUpdate or self.lastBattUpdate + timedelta(minutes=self.batteryRequestTime) < now:
-					Domoticz.Status("Reading battery level...")
-					batt=self.p.readCharacteristic(0x001b)
-					batt=int.from_bytes(batt,byteorder="little")
-					Devices[1].Update(nValue=0, sValue=str(self.temp)+";"+str(self.humidity)+";0", BatteryLevel=batt)
-					self.lastBattUpdate=now
-				else:
-					Devices[1].Update(nValue=0, sValue=str(self.temp)+";"+str(self.humidity)+";0")
-		except btle.BTLEException :
-			Domoticz.Error("Disconnect from " + self.adress)
-			try:
-				self.p.disconnect()
-			except Exception:
-				pass
-			self.p = None
-		
-	def connectBluetooth(self):
-		Domoticz.Status("Connecting bluetooth ...")
-		self.p = btle.Peripheral(self.adress)
-		val=b'\x01\x00'
-		self.p.writeCharacteristic(0x0038,val,True)
-		self.p.withDelegate(MyDelegate(self))
-		Domoticz.Status("Connected")
-		return self.p
+		id=1
+		for d in self.devices:
+			if d.received:
+				Devices[id].Update(nValue=0, sValue=str(d.temp)+";"+str(d.humidity)+";0")
+				d.received = False
+			if d.receivedBatt:
+				Devices[id].Update(nValue=0, sValue=str(d.temp)+";"+str(d.humidity)+";0", BatteryLevel=d.batt)
+				d.receivedBatt = False
+			id+=1
 
 
 
