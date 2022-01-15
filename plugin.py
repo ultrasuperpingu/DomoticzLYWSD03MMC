@@ -125,7 +125,7 @@ class BasePlugin:
 
 
 	def onStop(self):
-		if self.thread and thread.self.is_alive():
+		if self.thread and self.thread.is_alive():
 			self.manager.stop()
 			self.thread.join()
 			self.manager = None
