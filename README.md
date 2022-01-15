@@ -34,3 +34,4 @@ You can also update the plugin.py file in directory ```domoticz/plugins/{ChooseY
    - ```sudo hcitool lescan```
    - Search a line looking like: ```A1:C2:E3:04:25:46 LYWSD03MMC```
  * Enter MAC address in the corresponding field in plugin parameters
+ * Enter Adapter name (defult is hci0)
