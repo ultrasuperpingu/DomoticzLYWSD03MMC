@@ -16,7 +16,8 @@ sudo pip3 install gatt
 sudo apt-get install python3-dbus</pre><br/>
 		Find the MAC adress of your sensor: <pre>sudo hcitool lescan</pre> <br/>
 		<small>Look for lines like <pre>A1:C2:E3:04:25:47 LYWSD03MMC</pre></small><br/>
-		Set the MAC adress in the plugin parameters and add the hardware.
+		Change Adapter name if needed (default is hci0).<br/>
+		Set the MAC adresses (comma (',') separated) in the plugin parameters and add the hardware.
 	</description>
 	<params>
 		<param field="Mode1" label="Adapter name" width="120px" required="true" default="hci0"/>
