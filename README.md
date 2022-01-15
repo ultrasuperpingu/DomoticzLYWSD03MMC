@@ -6,7 +6,9 @@ Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) plugin for Domoticz
 Requirements: Only tested with Domoticz version 2020.2, Python 3 have to be installed.
 * Install required python packages:
    - ```sudo apt-get install python3-pip libglib2.0-dev```
-   - ```sudo pip3 install requests bluepy```
+   - ```sudo apt-get install --no-install-recommends bluetooth```
+   - ```sudo pip3 install gatt```
+   - ```sudo apt-get install python3-dbus```
  
 To get the development version:
 * With command line, go to Domoticz's plugin directory (domoticz/plugins)
