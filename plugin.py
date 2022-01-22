@@ -3,7 +3,7 @@ Xiaomi Mijia LYWSD03MMC Bluetooth 4.2 Temperature Humidity sensor python plugin 
 Author: Ultrasuperpingu,
 		adapted from Reading data from Xiaomi Mijia LYWSD03MMC Bluetooth 4.2 Temperature Humidity sensor, see:
 			https://github.com/trandbert37/DomoticzMiTemperature2
-Version: 0.2 (January, 2022)
+Version: 0.3 (January, 2022)
 """
 """
 <plugin key="LYWSD03MMC" name="Xiaomi Mijia Humidity and Temperature (LYWSD03MMC)" author="ulstrasuperpingu" version="0.1" externallink="https://github.com/ultrasuperpingu/DomoticzLYWSD03MMC">
