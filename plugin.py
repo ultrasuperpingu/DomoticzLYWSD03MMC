@@ -148,6 +148,8 @@ class BasePlugin:
 			if d.receivedBatt:
 				Devices[id].Update(nValue=0, sValue=str(d.temp)+";"+str(d.humidity)+";0", BatteryLevel=d.batt)
 				d.receivedBatt = False
+			if not d.is_connected():
+				d.connect()
 			id+=1
 
 
