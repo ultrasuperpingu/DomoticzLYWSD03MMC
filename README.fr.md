@@ -1,5 +1,8 @@
 # DomoticzLYWSD03MMC
-Plugin Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) pour Domoticz
+Plugin Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) pour Domoticz.
+
+Ce plugin NE FONCTIONNE PAS correctement. Je ne recommande PAS son utilisation.
+
 ## Installation
 Requis : Testé uniquement sur Domoticz version 2020.2, Python 3 doit être installé.
 * Installer les packages pythons requis:
