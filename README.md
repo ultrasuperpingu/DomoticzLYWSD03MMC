@@ -1,6 +1,7 @@
 # DomoticzLYWSD03MMC
 Xiaomi Mijia Humidity and Temperature (LYWSD03MMC) plugin for Domoticz.
-This plugin is flawed (look at the issues to know more about it). I don't recommend to use it.
+
+This plugin IS FLAWED (look at the issues to know more about it). I DON'T RECOMMAND TO USE IT.
 
 *Read this in french: [Français](README.fr.md)*
 ## Installation
